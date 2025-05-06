@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8' # Keep your version
 services:
   nextjs:
     build:
@@ -12,25 +12,37 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=${DATABASE_URL} # Prisma connection
+      # Assuming DATABASE_URL is defined in a .env file that docker-compose can read
+      - DATABASE_URL=${DATABASE_URL}
       - CHOKIDAR_USEPOLLING=true
+    # Updated depends_on to wait for the database healthcheck
     depends_on:
-      - database
+      database:
+        condition: service_healthy # This is the key change
     networks:
       - app-network
 
   database:
-    image: postgres:13
+    image: postgres:13 # Keep your image
     environment:
+      # Assuming these are defined in a .env file
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "5432:5432"
+      - "5555:5555" # Assuming you need this port mapping
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
       - app-network
+    # ADDED: Healthcheck to determine when the database is ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"] # Use $${VAR} to escape $ for the shell command
+      interval: 5s # How often to check
+      timeout: 5s # How long to wait for a response
+      retries: 5 # How many times to retry before marking as unhealthy
+      start_period: 10s # Optional: initial period to allow the container to start without failing healthcheck
 
 networks:
   app-network:

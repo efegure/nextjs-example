@@ -1,6 +1,8 @@
 import Link from "next/link";
 import PlantTable from "./components/PlantTable";
 import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
@@ -14,7 +16,9 @@ export default function Home() {
         </Link>
       </div>
       <div className="p-20">
-        <PlantTable></PlantTable>
+        <Suspense>
+          <PlantTable></PlantTable>
+        </Suspense>
       </div>
     </div>
   );

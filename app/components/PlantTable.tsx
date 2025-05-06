@@ -8,12 +8,10 @@ import {
   TableCell,
   Table,
 } from "@/components/ui/table";
-// import { prisma } from "@/lib/prisma";
-
-export const dynamic = "force-dynamic";
+import { prisma } from "@/lib/prisma";
 
 export default async function PlantTable() {
-  //   const plants = await prisma.plant.findMany();
+  const plants = await prisma.plant.findMany();
 
   return (
     <Card className="flex flex-col gap-5 p-8">
@@ -30,7 +28,7 @@ export default async function PlantTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {/* {plants.map((plant) => (
+          {plants.map((plant) => (
             <TableRow key={plant.id}>
               <TableCell className="font-medium">{plant.id}</TableCell>
               <TableCell>{plant.type}</TableCell>
@@ -39,7 +37,7 @@ export default async function PlantTable() {
                 {plant.expectedHumidty}
               </TableCell>
             </TableRow>
-          ))} */}
+          ))}
         </TableBody>
       </Table>
     </Card>
