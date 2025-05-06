@@ -23,14 +23,15 @@ model User {
 }
 
 model Plant {
-  id         Int      @id @default(autoincrement())
-  name       String
-  type       String?
-  published  Boolean  @default(false)
-  owner      User     @relation(fields: [ownerId], references: [id])
-  ownerId    Int
-  location   Location @relation(fields: [locationId], references: [id])
-  locationId Int
+  id                Int      @id @default(autoincrement())
+  name              String
+  type              String
+  weeklyWaterNeedML Int
+  expectedHumidty   Int
+  owner             User     @relation(fields: [ownerId], references: [id])
+  ownerId           Int
+  location          Location @relation(fields: [locationId], references: [id])
+  locationId        Int
 }
 
 model Location {
