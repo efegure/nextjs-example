@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  web:
+    image: your-production-image:latest # Replace with your desired image name
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000" # Map host port 80 to container port 3000 for standard HTTP
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL} # Prisma connection
+    depends_on:
+      - database
+    restart: always
+    networks:
+      - app-network
+
+  database:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    # Consider removing host port mapping in production for security
+    # ports:
+    #   - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
