@@ -19,24 +19,49 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { plantFormSchema, PlantFormValues } from "../types/plant-form-schema";
+import { createPlant } from "../actions/createPlant";
+import { updatePlant } from "../actions/updatePlant";
 
-export default function PlantForm() {
-  const locations = [{ id: 1, name: "asd" }]; //mock for now
+interface PlantFormProps {
+  locations: {
+    name: string;
+    lat: number;
+    long: number;
+    id: number;
+    ownerId: number;
+  }[];
+  toBeEdited: {
+    id: number;
+    name: string;
+    type: string;
+    weeklyWaterNeedML: number;
+    expectedHumidty: number;
+    locationId: number;
+  } | null;
+  currentUserId: number;
+}
 
+export default function PlantForm(props: PlantFormProps) {
   const form = useForm<PlantFormValues>({
     resolver: zodResolver(plantFormSchema),
     defaultValues: {
-      name: "",
-      type: "",
-      weeklyWaterNeedML: 0,
-      expectedHumidty: 50,
-      locationId: 0,
+      name: props.toBeEdited?.name ?? "",
+      type: props.toBeEdited?.type ?? "",
+      weeklyWaterNeedML: props.toBeEdited?.weeklyWaterNeedML ?? 0,
+      expectedHumidty: props.toBeEdited?.expectedHumidty ?? 50,
+      locationId: props.toBeEdited?.locationId ?? 0,
     },
   });
 
   const onSubmit = (values: PlantFormValues) => {
-    console.log(values);
-    // Submit to API here
+    if (props?.toBeEdited?.id) {
+      updatePlant(
+        { ...values, ownerId: props.currentUserId },
+        props.toBeEdited.id
+      );
+    } else {
+      createPlant({ ...values, ownerId: props.currentUserId });
+    }
   };
 
   return (
@@ -81,7 +106,11 @@ export default function PlantForm() {
               <FormItem>
                 <FormLabel>Weekly Water Need (mL)</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -95,7 +124,11 @@ export default function PlantForm() {
               <FormItem>
                 <FormLabel>Expected Humidity (%)</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -109,16 +142,20 @@ export default function PlantForm() {
               <FormItem>
                 <FormLabel>Location</FormLabel>
                 <FormControl>
-                  <Select onValueChange={(val) => field.onChange(Number(val))}>
+                  <Select
+                    onValueChange={(val) => field.onChange(Number(val))}
+                    value={field.value?.toString()}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a location" />
                     </SelectTrigger>
                     <SelectContent>
-                      {locations.map((loc) => (
-                        <SelectItem key={loc.id} value={loc.id.toString()}>
-                          {loc.name}
-                        </SelectItem>
-                      ))}
+                      {props.locations &&
+                        props.locations.map((loc) => (
+                          <SelectItem key={loc.id} value={loc.id.toString()}>
+                            {loc.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormControl>

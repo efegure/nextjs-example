@@ -16,20 +16,32 @@ import {
   locationFormSchema,
   LocationFormValues,
 } from "../types/location-form-schema";
+import { createLocation } from "../actions/createLocation";
 
-export function LocationForm() {
+interface LocationFormProps {
+  currentUserId: number;
+  toBeEdited: {
+    id: number;
+    name: string;
+    lat: number;
+    long: number;
+  } | null;
+}
+
+export function LocationForm(props: LocationFormProps) {
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationFormSchema),
     defaultValues: {
-      name: "",
-      lat: 0,
-      long: 0,
+      name: props?.toBeEdited?.name ?? "",
+      lat: props?.toBeEdited?.lat ?? 0,
+      long: props?.toBeEdited?.long ?? 0,
     },
   });
 
   const onSubmit = (values: LocationFormValues) => {
     console.log(values);
     // Submit to API here
+    createLocation({ ...values, ownerId: props.currentUserId });
   };
 
   return (
@@ -59,7 +71,12 @@ export function LocationForm() {
             <FormItem>
               <FormLabel>Latitude</FormLabel>
               <FormControl>
-                <Input type="number" step="any" {...field} />
+                <Input
+                  type="number"
+                  step="any"
+                  value={field.value}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -73,7 +90,12 @@ export function LocationForm() {
             <FormItem>
               <FormLabel>Longitude</FormLabel>
               <FormControl>
-                <Input type="number" step="any" {...field} />
+                <Input
+                  type="number"
+                  step="any"
+                  value={field.value}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

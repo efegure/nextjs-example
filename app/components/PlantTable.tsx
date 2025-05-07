@@ -9,6 +9,7 @@ import {
   Table,
 } from "@/components/ui/table";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
 export default async function PlantTable() {
   const plants = await prisma.plant.findMany();
@@ -21,20 +22,30 @@ export default async function PlantTable() {
         <TableCaption>A list of your plants.</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-[100px]">Id</TableHead>
             <TableHead className="w-[100px]">Name</TableHead>
             <TableHead className="w-[100px]">Type</TableHead>
-            <TableHead>Weekly Water Need(ML)</TableHead>
-            <TableHead>Expected Humidity</TableHead>
+            <TableHead className="text-center">Weekly Water Need(ML)</TableHead>
+            <TableHead className="text-center">Expected Humidity</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {plants.map((plant) => (
             <TableRow key={plant.id}>
               <TableCell className="font-medium">{plant.id}</TableCell>
+              <TableCell className="font-medium">{plant.name}</TableCell>
               <TableCell>{plant.type}</TableCell>
-              <TableCell>{plant.weeklyWaterNeedML}</TableCell>
-              <TableCell className="text-right">
+              <TableCell className="text-center">
+                {plant.weeklyWaterNeedML}
+              </TableCell>
+              <TableCell className="text-center">
                 {plant.expectedHumidty}
+              </TableCell>
+              <TableCell className="text-center">
+                {plant.expectedHumidty}
+              </TableCell>
+              <TableCell className="text-center">
+                <Link href={"/add-plant?id=" + plant.id}>Edit</Link>
               </TableCell>
             </TableRow>
           ))}

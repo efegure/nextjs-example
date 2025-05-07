@@ -20,9 +20,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 docker compose -f docker-compose.dev.yaml up --build
 
-## For seeding db with data(open another terminal while docker is running):
+#### For seeding db with data(open another terminal while docker is running):
+
+#### IMPORTANT: NEEDED FOR CREATING MOCK USERS OTHERWISE MAY PRODUCE ERRORS
 
 docker-compose -f docker-compose.dev.yaml exec nextjs yarn seed
+
+## to run any commands in docker container console, replace {COMMAND} with your command
+
+docker-compose -f docker-compose.dev.yaml exec nextjs {COMMAND}
 
 ## .env file example:
 
