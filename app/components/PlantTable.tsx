@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import DeletePlantButton from "./DeletePlantButton";
 
 export default async function PlantTable() {
   const plants = await prisma.plant.findMany();
@@ -46,6 +47,9 @@ export default async function PlantTable() {
               </TableCell>
               <TableCell className="text-center">
                 <Link href={"/add-plant?id=" + plant.id}>Edit</Link>
+              </TableCell>
+              <TableCell className="text-center">
+                <DeletePlantButton id={plant.id}></DeletePlantButton>
               </TableCell>
             </TableRow>
           ))}

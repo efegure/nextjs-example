@@ -10,6 +10,5 @@ export async function createPlant(data: {
   locationId: number;
   ownerId: number;
 }) {
-  debugger;
   await prisma.plant.create({ data });
 }

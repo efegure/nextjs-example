@@ -8,6 +8,5 @@ export async function createLocation(data: {
   long: number;
   ownerId: number;
 }) {
-  debugger;
   await prisma.location.create({ data });
 }
