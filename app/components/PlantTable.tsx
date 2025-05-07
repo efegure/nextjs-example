@@ -49,6 +49,9 @@ export default async function PlantTable() {
                 <Link href={"/add-plant?id=" + plant.id}>Edit</Link>
               </TableCell>
               <TableCell className="text-center">
+                <Link href={"/plant-graph?id=" + plant.id}>Graph</Link>
+              </TableCell>
+              <TableCell className="text-center">
                 <DeletePlantButton id={plant.id}></DeletePlantButton>
               </TableCell>
             </TableRow>

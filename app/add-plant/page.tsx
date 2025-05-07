@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function AddPlant({
   searchParams,
 }: {
-  searchParams: { id: string };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   // Assume you are Bob
   const currentUser = await prisma.user.findFirst({
@@ -26,11 +26,11 @@ export default async function AddPlant({
     },
   });
 
-  const toBeEditedPlant = (await searchParams?.id)
+  const toBeEditedPlant = (await searchParams)?.id
     ? await prisma.plant.findFirst({
         where: {
           id: {
-            equals: parseInt(searchParams?.id),
+            equals: parseInt((await searchParams)?.id as string),
           },
         },
       })

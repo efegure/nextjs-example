@@ -3,10 +3,12 @@ import { LocationForm } from "../components/LocationForm";
 import Header from "../components/Header";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function LocationPage({
   searchParams,
 }: {
-  searchParams: { id: string };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   // Assume you are Bob
   const currentUser = await prisma.user.findFirst({
@@ -16,12 +18,12 @@ export default async function LocationPage({
       },
     },
   });
-
-  const toBeEditedLocation = (await searchParams?.id)
+  const id = (await searchParams)?.id;
+  const toBeEditedLocation = (await searchParams)?.id
     ? await prisma.location.findFirst({
         where: {
           id: {
-            equals: parseInt(searchParams?.id),
+            equals: parseInt(id as string),
           },
         },
       })
