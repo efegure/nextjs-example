@@ -42,6 +42,7 @@ export default async function PlantGraph({
   // const longitude = response.longitude();
 
   const hourly = response.hourly()!;
+  console.warn(hourly);
 
   const weatherData = {
     hourly: {
@@ -61,7 +62,12 @@ export default async function PlantGraph({
   };
 
   // `weatherData` now contains a simple structure with arrays for datetime and weather data
+  const chartData = [];
   for (let i = 0; i < weatherData.hourly.time.length; i++) {
+    chartData.push({
+      time: weatherData.hourly.time[i].toISOString(),
+      temp: weatherData.hourly.temperature2m[i],
+    });
     console.log(
       weatherData.hourly.time[i].toISOString(),
       weatherData.hourly.temperature2m[i]
@@ -73,7 +79,7 @@ export default async function PlantGraph({
       <Header></Header>
       <Card className="p-8 flex flex-col m-auto">
         <span className="font-bold text-xl">Humidity Graph</span>
-        <Graph weatherData={weatherData}></Graph>
+        <Graph data={chartData}></Graph>
       </Card>
     </div>
   );
